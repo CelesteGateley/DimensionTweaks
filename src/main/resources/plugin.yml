@@ -1,0 +1,8 @@
+name: DimensionTweaks
+version: ${project.version}
+main: xyz.fluxinc.dimensiontweaks.DimensionTweaks
+api-version: 1.13
+prefix: DimensionTweaks
+authors: [CelesteMagisteel]
+description: Provides customisation for various dimensions
+website: https://fluxinc.xyz

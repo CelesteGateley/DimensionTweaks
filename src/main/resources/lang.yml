@@ -1,0 +1,20 @@
+# Language File for AdminFun
+
+# Prefix shown before chat messages.
+prefix: "&7[&9DimensionTweaks&7] "
+
+# Shown when an invalid usage is given
+# Valid Variables: %usage%
+invalidUsage: "&4Invalid Command Usage! Correct Usage: &c%usage%"
+
+# Shown when a player attempts to enter the top of the nether
+# Valid Variables: %player%, %display%, %permission%
+netherAccessDisallowed: "&4You do not have access to this area! Permission Required: %permission%"
+
+# Shown when a player attempts to break a block above y = 126 in the nether
+# Valid Variables: %player%, %display%, %permission%
+netherBreakDisallowed: "&4You do not have access to build in this area! Permission Required: %permission%"
+
+# Shown whenever a player attempts to fly in a restricted dimension
+# Valid Variables: %permission%, %world%
+flightDenied: "&4Flying is disabled in this dimension (%world%)! Permission Required: %permission%"
