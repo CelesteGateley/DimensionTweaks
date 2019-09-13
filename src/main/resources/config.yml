@@ -1,0 +1,18 @@
+# Configuration File for DimensionalTweaks
+
+# Should the plugin stop players from accessing the top of any nether biomes
+# default: true
+deny-nether-ceiling: true
+
+# Should creative mode bypass this restriction
+# default: false
+creative-bypass-nether: false
+
+# What worlds should the players not be allowed to fly in
+# default: ["world_the_end"] (Set to [] to disable)
+deny-flight-in-worlds:
+  - "world_the_end"
+
+# Should being in creative mode bypass flight restrictions
+# default: false
+creative-bypass-flight: false

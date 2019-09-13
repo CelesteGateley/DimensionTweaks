@@ -4,10 +4,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import xyz.fluxinc.dimensiontweaks.listeners.FlightListener;
+import xyz.fluxinc.dimensiontweaks.listeners.NetherCeilingListener;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 
 public final class DimensionTweaks extends JavaPlugin {
 
@@ -15,6 +19,10 @@ public final class DimensionTweaks extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // Load the default config file
+        saveDefaultConfig();
+
+
         // Load Lang File
         lang = new YamlConfiguration();
         saveResource("lang.yml", false);
@@ -25,6 +33,16 @@ public final class DimensionTweaks extends JavaPlugin {
             e.printStackTrace();
             getServer().getPluginManager().disablePlugin(this);
             return;
+        }
+
+        // Nether Ceiling Features
+        if (getConfig().getBoolean("deny-nether-ceiling")) {
+            getServer().getPluginManager().registerEvents(new NetherCeilingListener(this, getConfig().getBoolean("creative-bypass-nether")), this);
+        }
+
+        // Flight Denial Features
+        for (String world : getConfig().getStringList("deny-flight-in-worlds")) {
+            getServer().getPluginManager().registerEvents(new FlightListener(this, getServer().getWorld(world), getConfig().getBoolean("creative-bypass-flight")), this);
         }
 
 
