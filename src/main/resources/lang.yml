@@ -9,11 +9,11 @@ invalidUsage: "&4Invalid Command Usage! Correct Usage: &c%usage%"
 
 # Shown when a player attempts to enter the top of the nether
 # Valid Variables: %player%, %display%, %permission%
-netherAccessDisallowed: "&4You do not have access to this area! Permission Required: %permission%"
+netherAccessDenied: "&4You do not have access to this area! Permission Required: %permission%"
 
 # Shown when a player attempts to break a block above y = 126 in the nether
 # Valid Variables: %player%, %display%, %permission%
-netherBreakDisallowed: "&4You do not have access to build in this area! Permission Required: %permission%"
+netherBreakDenied: "&4You do not have access to build in this area! Permission Required: %permission%"
 
 # Shown whenever a player attempts to fly in a restricted dimension
 # Valid Variables: %permission%, %world%
