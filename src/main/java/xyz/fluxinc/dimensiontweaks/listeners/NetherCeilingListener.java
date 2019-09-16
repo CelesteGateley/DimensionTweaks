@@ -2,6 +2,8 @@ package xyz.fluxinc.dimensiontweaks.listeners;
 
 import org.bukkit.GameMode;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -23,72 +25,57 @@ public class NetherCeilingListener implements Listener {
 
     @EventHandler
     public void preventNetherCeilingAccess(PlayerMoveEvent event) {
-        if (event.getPlayer().hasPermission("dimensiontweaks.netherceiling.bypass") || event.getPlayer().isOp()) { return; }
-        if (event.getPlayer().getGameMode() == GameMode.CREATIVE && creativeBypass) { return; }
-        // Handle Preventing Accessing the Nether Ceiling
-        Biome loc = event.getPlayer().getWorld().getBiome((int)event.getTo().getX(), (int)event.getTo().getZ());
-        if (loc != Biome.NETHER) { return; }
-        if (event.getTo().getY() < moveLimit) { return; }
+        if (verifyDenial(event.getTo().getBlock(), moveLimit, event.getPlayer())) { return; }
         event.setCancelled(true);
-        HashMap<String, String> var = new HashMap<>();
-        var.put("player", event.getPlayer().getName());
-        var.put("display", event.getPlayer().getDisplayName());
-        var.put("permission", "dimensiontweaks.netherceiling.bypass");
-        event.getPlayer().sendMessage(instance.generateMessage("netherAccessDenied", var));
+        sendMessage(event.getPlayer());
     }
 
     @EventHandler
     public void netherCeilingBreak(BlockBreakEvent event) {
-        if (event.getPlayer().hasPermission("dimensiontweaks.netherceiling.bypass") || event.getPlayer().isOp()) { return; }
-        if (event.getPlayer().getGameMode() == GameMode.CREATIVE && creativeBypass) { return; }
-        // Handle Preventing Accessing the Nether Ceiling
-        if (event.getBlock().getBiome() != Biome.NETHER) { return; }
-        if (event.getBlock().getY() < breakLimit) { return; }
+        if (verifyDenial(event.getBlock(), breakLimit, event.getPlayer())) { return; }
         event.setCancelled(true);
-        HashMap<String, String> var = new HashMap<>();
-        var.put("player", event.getPlayer().getName());
-        var.put("display", event.getPlayer().getDisplayName());
-        var.put("permission", "dimensiontweaks.netherceiling.bypass");
-        event.getPlayer().sendMessage(instance.generateMessage("netherBreakDenied", var));
+        sendMessage(event.getPlayer());
     }
 
     @EventHandler
     public void netherCeilingTeleport(PlayerTeleportEvent event) {
-        if (event.getPlayer().hasPermission("dimensiontweaks.netherceiling.bypass") || event.getPlayer().isOp()) { return; }
-        if (event.getPlayer().getGameMode() == GameMode.CREATIVE && creativeBypass) { return; }
-        // Handle Preventing Accessing the Nether Ceiling
-        Biome loc = event.getTo().getWorld().getBiome(event.getTo().getBlock().getX(), event.getTo().getBlock().getZ());
-        if (loc != Biome.NETHER) { return; }
-        if (event.getTo().getBlock().getY() < moveLimit) { return; }
+        if (verifyDenial(event.getTo().getBlock(), moveLimit, event.getPlayer())) { return; }
         event.setCancelled(true);
-        HashMap<String, String> var = new HashMap<>();
-        var.put("player", event.getPlayer().getName());
-        var.put("display", event.getPlayer().getDisplayName());
-        var.put("permission", "dimensiontweaks.netherceiling.bypass");
-        event.getPlayer().sendMessage(instance.generateMessage("netherAccessDenied", var));
+        sendMessage(event.getPlayer());
     }
 
     @EventHandler
     public void netherCeilingPortal(PlayerPortalEvent event) {
-        if (event.getPlayer().hasPermission("dimensiontweaks.netherceiling.bypass") || event.getPlayer().isOp()) { return; }
-        if (event.getPlayer().getGameMode() == GameMode.CREATIVE && creativeBypass) { return; }
         if (event.getCause() != PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) { return; }
-        // Handle Preventing Accessing the Nether Ceiling
-        Biome loc = event.getTo().getWorld().getBiome(event.getTo().getBlock().getX(), event.getTo().getBlock().getZ());
-        if (loc != Biome.NETHER) { return; }
-        if (event.getTo().getBlock().getY() < moveLimit) { return; }
+        if (verifyDenial(event.getTo().getBlock(), moveLimit, event.getPlayer())) { return; }
         event.setCancelled(true);
-        HashMap<String, String> var = new HashMap<>();
-        var.put("player", event.getPlayer().getName());
-        var.put("display", event.getPlayer().getDisplayName());
-        var.put("permission", "dimensiontweaks.netherceiling.bypass");
-        event.getPlayer().sendMessage(instance.generateMessage("netherAccessDenied", var));
+        sendMessage(event.getPlayer());
     }
 
     @EventHandler
     public void netherCeilingPiston(BlockPistonEvent event) {
-        if (event.getBlock().getY() < breakLimit - 2) { return; }
-        if (event.getBlock().getBiome() != Biome.NETHER) { return; }
+        if (verifyDenial(event.getBlock(), breakLimit - 2)) { return; }
         event.setCancelled(true);
+    }
+
+    private boolean verifyDenial(Block block, int heightLimit, Player player) {
+        boolean permissionCheck = player.hasPermission("dimensiontweaks.netherceiling.bypass");
+        boolean gamemodeCheck = player.getGameMode() == GameMode.CREATIVE && creativeBypass;
+
+        return verifyDenial(block, heightLimit) || permissionCheck || gamemodeCheck;
+    }
+
+    private boolean verifyDenial(Block block, int heightLimit) {
+        boolean biomeCheck = block.getBiome() != Biome.NETHER;
+        boolean limitCheck = block.getY() < heightLimit;
+        return biomeCheck || limitCheck;
+    }
+
+    private void sendMessage(Player player) {
+        HashMap<String, String> var = new HashMap<>();
+        var.put("player", player.getName());
+        var.put("display", player.getDisplayName());
+        var.put("permission", "dimensiontweaks.netherceiling.bypass");
+        player.sendMessage(instance.generateMessage("netherAccessDenied", var));
     }
 }
