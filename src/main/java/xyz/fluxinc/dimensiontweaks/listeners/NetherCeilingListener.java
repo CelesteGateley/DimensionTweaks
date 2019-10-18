@@ -45,14 +45,6 @@ public class NetherCeilingListener implements Listener {
     }
 
     @EventHandler
-    public void netherCeilingPortal(PlayerPortalEvent event) {
-        if (event.getCause() != PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) { return; }
-        if (verifyDenial(event.getTo().getBlock(), moveLimit, event.getPlayer())) { return; }
-        event.setCancelled(true);
-        sendMessage(event.getPlayer());
-    }
-
-    @EventHandler
     public void netherCeilingPiston(BlockPistonEvent event) {
         if (verifyDenial(event.getBlock(), breakLimit - 2)) { return; }
         event.setCancelled(true);
