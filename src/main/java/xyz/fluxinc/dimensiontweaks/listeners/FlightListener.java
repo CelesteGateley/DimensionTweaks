@@ -2,6 +2,7 @@ package xyz.fluxinc.dimensiontweaks.listeners;
 
 import org.bukkit.GameMode;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -24,33 +25,34 @@ public class FlightListener implements Listener {
 
     @EventHandler
     public void onFlight(PlayerToggleFlightEvent event) {
-        if (event.getPlayer().hasPermission("dimensiontweaks.flight.bypass.*")
-               || event.getPlayer().hasPermission("dimensiontweaks.flight.bypass." + affectedWorld.getName().toLowerCase())
-               || event.getPlayer().isOp()) { return; }
-        if (event.getPlayer().getGameMode() == GameMode.CREATIVE && creativeBypass) { return; }
-        if (event.getPlayer().getLocation().getWorld() != affectedWorld) { return; }
+        if (!checkFlight(event.getPlayer())) { return; }
         if (!event.isFlying()) { return; }
-        event.getPlayer().setAllowFlight(false);
-        HashMap<String, String> var = new HashMap<>();
-        var.put("world", affectedWorld.getName().toLowerCase());
-        var.put("permission", "dimensiontweaks.flight.bypass." + affectedWorld.getName().toLowerCase());
-        event.getPlayer().sendMessage(instance.generateMessage("flightDenied", var));
+        denyFlight(event.getPlayer());
     }
 
     @EventHandler
     public void onFlightMove(PlayerMoveEvent event) {
-        if (event.getPlayer().hasPermission("dimensiontweaks.flight.bypass.*")
-                || event.getPlayer().hasPermission("dimensiontweaks.flight.bypass." + affectedWorld.getName().toLowerCase())
-                || event.getPlayer().isOp()) { return; }
-        if (event.getPlayer().getGameMode() == GameMode.CREATIVE && creativeBypass) { return; }
-        if (event.getPlayer().getLocation().getWorld() != affectedWorld) { return; }
+        if (!checkFlight(event.getPlayer())) { return; }
         if (!event.getPlayer().getAllowFlight()) { return; }
         event.setCancelled(true);
-        event.getPlayer().setAllowFlight(false);
+        denyFlight(event.getPlayer());
+    }
+
+    private boolean checkFlight(Player player) {
+        if (player.hasPermission("dimensiontweaks.flight.bypass.*")
+                || player.hasPermission("dimensiontweaks.flight.bypass." + affectedWorld.getName().toLowerCase())
+                || player.isOp()) { return false; }
+        if (player.getGameMode() == GameMode.CREATIVE && creativeBypass) { return false; }
+        if (player.getLocation().getWorld() != affectedWorld) { return false; }
+        return true;
+    }
+
+    private void denyFlight(Player player) {
+        player.setAllowFlight(false);
         HashMap<String, String> var = new HashMap<>();
         var.put("world", affectedWorld.getName().toLowerCase());
         var.put("permission", "dimensiontweaks.flight.bypass." + affectedWorld.getName().toLowerCase());
-        event.getPlayer().sendMessage(instance.generateMessage("flightDenied", var));
+        player.sendMessage(instance.generateMessage("flightDenied", var));
     }
 
 }
