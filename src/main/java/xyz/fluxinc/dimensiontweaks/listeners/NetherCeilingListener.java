@@ -6,8 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPistonEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -45,7 +44,13 @@ public class NetherCeilingListener implements Listener {
     }
 
     @EventHandler
-    public void netherCeilingPiston(BlockPistonEvent event) {
+    public void netherCeilingPistonExtend(BlockPistonExtendEvent event) {
+        if (verifyDenial(event.getBlock(), breakLimit - 2)) { return; }
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void netherCeilingPistonRetract(BlockPistonRetractEvent event) {
         if (verifyDenial(event.getBlock(), breakLimit - 2)) { return; }
         event.setCancelled(true);
     }
